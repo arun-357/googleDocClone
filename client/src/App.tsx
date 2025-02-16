@@ -1,11 +1,10 @@
-import TextEditor from "./components/TextEditor"
+import TextEditor from "./components/TextEditor";
 function App() {
-
   return (
     <>
       <TextEditor />
     </>
-  )
+  );
 }
 
-export default App
+export default App;
