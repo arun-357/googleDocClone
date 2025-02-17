@@ -4,6 +4,7 @@ import "quill/dist/quill.snow.css";
 import { io, Socket } from "socket.io-client";
 import Quill from "quill";
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const toolbarOptions: any[] = [
   [{ header: [1, 2, 3, false] }], // Headings (H1, H2, H3, Normal text)
   ["bold", "italic", "underline", "strike"], // Basic text formatting
@@ -31,6 +32,7 @@ export default function TextEditor() {
     };
   }, []);
 
+  // load document from server
   useEffect(() => {
     if (socket === null || quill === null) return;
 
@@ -42,9 +44,22 @@ export default function TextEditor() {
     socket.emit("get-document", documentId);
   }, [socket, quill, documentId]);
 
+  // save document to server
+  useEffect(() => {
+    if (socket === null || quill === null) return;
+    const interval = setInterval(() => {
+      socket.emit("save-document", quill.getContents());
+    }, 2000);
+
+    return () => {
+      clearInterval(interval);
+    };
+  }, [socket, quill]);
+
   // Send changes to server
   useEffect(() => {
     interface Delta {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       ops: any[];
     }
     if (socket === null || quill === null) return;
@@ -62,6 +77,7 @@ export default function TextEditor() {
   // Receive changes from server
   useEffect(() => {
     if (socket === null || quill === null) return;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const handler = (delta: any) => {
       quill.updateContents(delta);
     };
@@ -72,6 +88,7 @@ export default function TextEditor() {
     };
   }, [socket, quill]);
 
+  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
   interface WrapperElement extends HTMLDivElement {}
 
   const initializeQuill = useCallback((wrapper: WrapperElement | null) => {

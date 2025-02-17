@@ -9,7 +9,7 @@ import { v4 as uuidV4 } from "uuid";
 
 function App() {
   return (
-    <Router>
+    <Router future={{ v7_relativeSplatPath: true }}>
       <Routes>
         <Route
           path="/"
